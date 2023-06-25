@@ -5,10 +5,13 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 from tqdm import tqdm
+from pathlib import Path
 
 cls = lambda: os.system('cls')
 cls()
 path = os.getcwd()
+path = Path(path)
+
 
 def getData():
     url = "https://amazfitwatchfaces.com/mi-band-6/fresh/p/2"
@@ -40,6 +43,7 @@ def create_folder(name):
     """Create a folder to put the photos"""
     try:
         os.mkdir(f"{name}_images")
+        os.mkdir("CSV_Files")
     except:
         os.rmdir(f"{name}_images")
         os.mkdir(f"{name}_images")
@@ -66,6 +70,11 @@ def extract_src(html_code):
     src = img_tag['src']
     return src
 
+def ConvertCSVFile(data):
+
+    """"""
+    pass
+
 def main():
     MyLinks = []
     Data = getData()
@@ -89,16 +98,19 @@ def main():
                 }
                 MyLinks.append(DicUserData)
 
-    print(MyLinks) # Tomorrow I'll have to create CSV with Pandas, that's so easy to do
-
+    DataFrame = pd.DataFrame(MyLinks)  # Convert data to DataFrame
+    output_path = path / "CSV_Files" / "output.csv"  # Set the desired output path and filename
+    DataFrame.to_csv(output_path, index=False)  # Save the DataFrame as CSV
+    
     # Install all the images there are
+    """
     for link in tqdm(link_img):
         linkName = extract_filename(link["src"])
         extension = extract_extension(linkName)
         Deflink = remove_extension(linkName)
         MyPath = str(path)+"/"+str(folder_name)
         ImageDownloader("https://amazfitwatchfaces.com/"+str(link["src"]),Deflink, extension=extension, folder_name=MyPath)
- 
+    """
 
 if __name__ == '__main__':
     main()
